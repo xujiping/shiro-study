@@ -2,12 +2,13 @@ package com.study.model;
 
 import java.util.Date;
 
+import javax.persistence.Table;
+
 /**
 * @author xujiping
 * @version 2017年4月26日 下午3:53:49
 * 用户类
 */
-
 public class User {
 
 	private int id;
