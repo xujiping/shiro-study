@@ -10,6 +10,8 @@ import com.study.model.User;
 import java.util.Map;
 
 public interface UserService {
+
+	public int add(User user);
 	
 	/**
 	 * 根据条件查询用户信息
@@ -17,13 +19,6 @@ public interface UserService {
 	 * @return
 	 */
 	public User getUser(Map<String, Object> map);
-	
-	/**
-	 * 通过Id，更新用户信息
-	 * @param user
-	 * @return
-	 */
-	public int updateUser(User user);
 	
 	/**
 	 * 通过用户名查询用户信息

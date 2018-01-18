@@ -1,8 +1,15 @@
 package com.study.conf;
 
+import com.study.credentials.RetryLimitHashedCredentialsMatcher;
+import com.study.realm.PermissionRealm;
+
+import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,10 +25,7 @@ import org.apache.shiro.realm.Realm;
 */
 @Configuration
 public class ShiroConfiguration {
-	
-	@Autowired
-	private Realm permissionRealm;
-	
+
 	@Bean
 	public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager){
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -40,6 +44,7 @@ public class ShiroConfiguration {
 		filterChainDefinitionMap.put("/css/**", "anon");
 		filterChainDefinitionMap.put("/js/**", "anon");
 		filterChainDefinitionMap.put("/ajaxLogin", "anon");
+		filterChainDefinitionMap.put("/signUp/**", "anon");
 		//配置退出过滤器,具体代码Shiro已经实现
 		filterChainDefinitionMap.put("/logout", "logout");
 		filterChainDefinitionMap.put("/add", "perms[权限添加]");
@@ -55,8 +60,46 @@ public class ShiroConfiguration {
 	public SecurityManager securityManager(){
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		//设置realm，可以指定多个realm实现
-		securityManager.setRealm(permissionRealm);
+		securityManager.setRealm(permissionRealm(credentialsMatcher()));
 		return securityManager;
 	}
+
+    /**
+     * 配置自定义权限登录器
+     * @param matcher
+     * @return
+     */
+	@Bean
+	public PermissionRealm permissionRealm(@Qualifier("credentialsMatcher") CredentialsMatcher matcher){
+
+        PermissionRealm permissionRealm = new PermissionRealm();
+        permissionRealm.setCredentialsMatcher(matcher);
+        return permissionRealm;
+    }
+
+    /**
+     * 缓存管理器
+     * @return
+     */
+	@Bean
+	public EhCacheManager cacheManager(){
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        ehCacheManager.setCacheManagerConfigFile("classpath:ehcache.xml");
+        return ehCacheManager;
+    }
+
+	/**
+	 * 凭证匹配器
+	 * @return
+	 */
+	@Bean
+	public CredentialsMatcher credentialsMatcher(){
+        HashedCredentialsMatcher matcher = new
+            RetryLimitHashedCredentialsMatcher(cacheManager());
+        matcher.setHashAlgorithmName("md5");
+        matcher.setHashIterations(2);
+        matcher.setStoredCredentialsHexEncoded(true);
+        return matcher;
+    }
 
 }

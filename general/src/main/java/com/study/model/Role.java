@@ -1,43 +1,146 @@
 package com.study.model;
 
+import javax.persistence.*;
 
-/**
- * @author xujiping
- * @version 2017年4月26日 下午3:52:33 角色类
- */
+@Table(name = "role")
 public class Role {
+    /**
+     * 编号
+     */
+    @Id
+    @Column(name = "role_id")
+    private Integer roleId;
 
-	private int id;
-	private String name;
-	private String type;
+    /**
+     * 角色名称
+     */
+    private String name;
 
-	public int getId() {
-		return id;
-	}
+    /**
+     * 角色标题
+     */
+    private String title;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    /**
+     * 角色描述
+     */
+    private String description;
 
-	public String getName() {
-		return name;
-	}
+    /**
+     * 创建时间
+     */
+    private Long ctime;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * 排序
+     */
+    private Long orders;
 
-	public String getType() {
-		return type;
-	}
+    /**
+     * 获取编号
+     *
+     * @return role_id - 编号
+     */
+    public Integer getRoleId() {
+        return roleId;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * 设置编号
+     *
+     * @param roleId 编号
+     */
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
 
-	@Override
-	public String toString() {
-		return "Role [id=" + id + ", name=" + name + ", type=" + type + "]";
-	}
+    /**
+     * 获取角色名称
+     *
+     * @return name - 角色名称
+     */
+    public String getName() {
+        return name;
+    }
 
+    /**
+     * 设置角色名称
+     *
+     * @param name 角色名称
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 获取角色标题
+     *
+     * @return title - 角色标题
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * 设置角色标题
+     *
+     * @param title 角色标题
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * 获取角色描述
+     *
+     * @return description - 角色描述
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * 设置角色描述
+     *
+     * @param description 角色描述
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * 获取创建时间
+     *
+     * @return ctime - 创建时间
+     */
+    public Long getCtime() {
+        return ctime;
+    }
+
+    /**
+     * 设置创建时间
+     *
+     * @param ctime 创建时间
+     */
+    public void setCtime(Long ctime) {
+        this.ctime = ctime;
+    }
+
+    /**
+     * 获取排序
+     *
+     * @return orders - 排序
+     */
+    public Long getOrders() {
+        return orders;
+    }
+
+    /**
+     * 设置排序
+     *
+     * @param orders 排序
+     */
+    public void setOrders(Long orders) {
+        this.orders = orders;
+    }
 }

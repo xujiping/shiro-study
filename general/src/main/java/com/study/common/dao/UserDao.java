@@ -14,10 +14,7 @@ import org.apache.ibatis.annotations.Update;
 
 public interface UserDao extends BaseDao<User>{
 
-    @Select("select * from user where nickname=#{username}")
+    @Select("select * from user where username=#{username}")
     public User selectUserByName(String username);
-
-    @Update("update user set last_login_time=#{lastLoginTime} where id=#{id}")
-    public int updateLastLoginTime(User user);
 
 }

@@ -30,20 +30,23 @@
 
 		<form class="form-signin">
 			<h2 class="form-signin-heading">Please sign in</h2>
-			<label for="inputEmail" class="sr-only">Username</label>
+			<label for="inputUsername" class="sr-only">Username</label>
 			<input type="text" id="inputUsername" class="form-control"
 				th:name="username" placeholder="Username" required="required"
-				autofocus="autofocus" /> <label for="inputPassword" class="sr-only">Password</label>
+				autofocus="autofocus" />
+            <label for="inputPassword" class="sr-only">Password</label>
 			<input type="password" id="inputPassword" class="form-control"
-				th:name="password" placeholder="Password" required="required" /> <span
-				id="erro"></span>
+				th:name="password" placeholder="Password" required="required" />
+            <span id="erro"></span>
 			<div class="checkbox">
-				<label> <input type="checkbox" value="remember-me" />
+				<label>
+                    <input type="checkbox" value="remember-me" />
 					Remember me
 				</label>
 			</div>
 			<input id="ajaxLogin" class="btn btn-lg btn-primary btn-block"
 				type="button" th:value="登录" />
+            <a href="/signUp">注册</a>
 		</form>
 
 	</div>

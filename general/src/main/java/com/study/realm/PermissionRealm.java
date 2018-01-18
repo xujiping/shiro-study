@@ -21,14 +21,13 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author xujiping
  * @version 2017年5月2日 上午11:28:27 自定义权限认证
  */
-@Component
 public class PermissionRealm extends AuthorizingRealm {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -70,15 +69,12 @@ public class PermissionRealm extends AuthorizingRealm {
         User user = userService.getUserByName(username);
         if (user == null) {
             throw new AccountException("账号或密码不正确！");
-        } else if (user.getStatus() == 0) {
+        } else if (user.getLocked() == 1) {
             throw new DisabledAccountException("账号已经被禁止登录！");
-        } else {
-            //更新登录时间
-            user.setLastLoginTime(new Date());
-            int status = userService.updateUser(user);
-            System.out.println("更新登录时间：" + status);
         }
-        return new SimpleAuthenticationInfo(username, password, getName());
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo
+            (user.getUsername(), user.getPassword(), ByteSource.Util.bytes(user.getCredentialsSalt()), getName());
+        return simpleAuthenticationInfo;
     }
 
     @Override

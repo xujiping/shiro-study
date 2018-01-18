@@ -24,14 +24,14 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 
 	@Override
-	public User getUser(Map<String, Object> map) {
-		List<User> list = userDao.selectByExample(map);
-		return list.get(0);
+	public int add(User user) {
+		return userDao.insertSelective(user);
 	}
 
 	@Override
-	public int updateUser(User user) {
-		return userDao.updateLastLoginTime(user);
+	public User getUser(Map<String, Object> map) {
+		List<User> list = userDao.selectByExample(map);
+		return list.get(0);
 	}
 
 	@Override
