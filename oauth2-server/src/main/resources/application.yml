@@ -1,0 +1,45 @@
+#spring boot自动加载配置文件
+server:
+  port: 8110
+
+spring:
+  #数据库连接配置
+  datasource:
+    name: test
+    url: jdbc:mysql://localhost:3306/cms-admin?useSSL=false
+    username: root
+    password: root123
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+    #修改跳转的前缀和后缀,一下注释部分是spring boot的默认配置
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    #开发过程中需将缓存关掉
+    cache: false
+  #server:
+    #tomcat:
+      #access_log_enabled: true
+      #basedir: target/tomcat
+
+mybatis:
+  type-aliases-package: com.study.shiro.entity
+  mapper-locations: classpath*:mapper/*.xml
+
+
+#日志
+logging:
+  path: C:\opt\logs
+  file: ishop.log
+  level:
+    root: info
+    #还可以 包名: 级别
+
+#自定义属性
+my:
+  servers:
+    - dev.bar.com
+    - foo.bar.com

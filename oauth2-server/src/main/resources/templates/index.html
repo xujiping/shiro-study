@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 以上meta必须最上面 -->
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>index</title>
+</head>
+<body>
+<h3>index</h3>
+<div class="well">
+    <p>sessionId:<span th:text="${sessionId}"></span></p>
+</div>
+<div class="well">
+    <h3>认证客户端列表</h3>
+    <ul>
+        <li th:each="client : ${oauth2Clients}">
+            <span th:text="${client.clientName}"></span>
+        </li>
+    </ul>
+</div>
+<a href="/edit">修改</a>
+</body>
+</html>

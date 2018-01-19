@@ -34,7 +34,10 @@
     </plugins>
   </build>
 
-  <modules></modules>
+  <modules>
+    <module>general</module>
+    <module>oauth2-server</module>
+  </modules>
 
 
 </project>
