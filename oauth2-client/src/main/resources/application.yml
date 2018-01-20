@@ -1,6 +1,6 @@
 #spring boot自动加载配置文件
 server:
-  port: 8110
+  port: 8111
 
 spring:
   #数据库连接配置

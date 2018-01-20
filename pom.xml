@@ -37,6 +37,7 @@
   <modules>
     <module>general</module>
     <module>oauth2-server</module>
+    <module>oauth2-client</module>
   </modules>
 
 

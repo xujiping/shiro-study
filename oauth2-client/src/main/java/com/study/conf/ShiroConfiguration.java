@@ -1,7 +1,7 @@
 package com.study.conf;
 
-import com.study.cache.SpringCacheManagerWrapper;
 import com.study.credentials.RetryLimitHashedCredentialsMatcher;
+import com.study.filter.OAuth2AuthenticationFilter;
 import com.study.realm.PermissionRealm;
 
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -12,7 +12,6 @@ import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.session.SessionListener;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.Cookie;
@@ -20,7 +19,6 @@ import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,9 +40,6 @@ import javax.servlet.Filter;
 public class ShiroConfiguration {
 
     @Autowired
-    private EhCacheCacheManager springCacheManager;
-
-    @Autowired
     private SessionListener mySessionListener;
 
     @Bean
@@ -53,32 +48,24 @@ public class ShiroConfiguration {
         //必须设置SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //如果不设置默认会自动寻找根目录/login.jsp页面
-        shiroFilterFactoryBean.setLoginUrl("/login");
+        shiroFilterFactoryBean.setLoginUrl
+            ("http://localhost:8110/authorize?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&response_type=code&redirect_uri=http://localhost:8111/oauth2-login");
         //登录成功后跳转的链接
         shiroFilterFactoryBean.setSuccessUrl("/index");
         //未授权界面
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 
         Map<String, Filter> filters = new HashMap<>();
-        filters.put("authc", formAuthenticationFilter());
+        filters.put("oauth2Authc", oAuth2AuthenticationFilter());
         shiroFilterFactoryBean.setFilters(filters);
-
         //拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         //配置不会被拦截的链接，顺序判断
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
-        filterChainDefinitionMap.put("/ajaxLogin", "anon");
-        filterChainDefinitionMap.put("/signUp/**", "anon");
-
-        //配置oauth2相关
-        filterChainDefinitionMap.put("/login", "authc");
-        filterChainDefinitionMap.put("/authorize", "anon");
-        filterChainDefinitionMap.put("/accessToken", "anon");
-        filterChainDefinitionMap.put("/userInfo", "anon");
-        filterChainDefinitionMap.put("/oauth2login", "anon");
-
+        //导向oauth2服务端登陆
+        filterChainDefinitionMap.put("/oauth2-login", "oauth2Authc");
         //配置退出过滤器,具体代码Shiro已经实现
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/add", "perms[权限添加]");
@@ -105,8 +92,18 @@ public class ShiroConfiguration {
      */
     @Bean
     public PermissionRealm permissionRealm(@Qualifier("credentialsMatcher") CredentialsMatcher
-                                                   matcher) {
+                                               matcher) {
         PermissionRealm permissionRealm = new PermissionRealm();
+        permissionRealm.setCachingEnabled(true);
+        permissionRealm.setAuthenticationCachingEnabled(true);
+        permissionRealm.setAuthenticationCacheName("authenticationCache");
+        permissionRealm.setAuthorizationCachingEnabled(true);
+        permissionRealm.setAuthorizationCacheName("authorizationCache");
+        permissionRealm.setClientId("c1ebe466-1cdc-4bd3-ab69-77c3561b9dee");
+        permissionRealm.setClientSecret("d8346ea2-6017-43ed-ad68-19c0f971738b");
+        permissionRealm.setAccessTokenUrl("http://localhost:8110/accessToken");
+        permissionRealm.setUserInfoUrl("http://localhost:8110/userInfo");
+        permissionRealm.setRedirectUrl("http://localhost:8110/login");
         permissionRealm.setCredentialsMatcher(matcher);
         return permissionRealm;
     }
@@ -115,10 +112,10 @@ public class ShiroConfiguration {
      * 缓存管理器
      */
     @Bean
-    public SpringCacheManagerWrapper cacheManager() {
-        SpringCacheManagerWrapper cacheManagerWrapper = new SpringCacheManagerWrapper();
-        cacheManagerWrapper.setCacheManager(springCacheManager);
-        return cacheManagerWrapper;
+    public EhCacheManager cacheManager() {
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        ehCacheManager.setCacheManagerConfigFile("classpath:ehcache.xml");
+        return ehCacheManager;
     }
 
     /**
@@ -156,11 +153,10 @@ public class ShiroConfiguration {
 
     /**
      * RememberMe管理器
-     * @return
      */
     @Bean
-    public RememberMeManager rememberMeManager(){
-        CookieRememberMeManager rememberMeManager =new CookieRememberMeManager();
+    public RememberMeManager rememberMeManager() {
+        CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
         Cookie cookie = new SimpleCookie();
         cookie.setName("rememberMe");
         cookie.setHttpOnly(true);
@@ -171,12 +167,11 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    public Filter formAuthenticationFilter(){
-        FormAuthenticationFilter filter = new FormAuthenticationFilter();
-        filter.setUsernameParam("username");
-        filter.setPasswordParam("password");
-        filter.setRememberMeParam("rememberMe");
-        filter.setLoginUrl("/login");
+    public Filter oAuth2AuthenticationFilter() {
+        OAuth2AuthenticationFilter filter = new OAuth2AuthenticationFilter();
+        filter.setAuthcCodeParam("code");
+        filter.setFailureUrl("oauth2Failure");
         return filter;
     }
+
 }

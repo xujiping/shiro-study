@@ -71,7 +71,7 @@ public class AuthorizeController {
                     //登陆失败时跳转到登陆页面
                     model.addAttribute("client", clientService.findByClientId(authAuthzRequest
                         .getClientId()));
-                    return "login";
+                    return "oauth2login";
                 }
             }
 
