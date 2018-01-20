@@ -27,7 +27,7 @@ public class HomeController {
         Subject subject = SecurityUtils.getSubject();
         Session session = subject.getSession();
         model.addAttribute("sessionId", session.getId());
-        return "/index";
+        return "index";
     }
 
     @RequestMapping("/edit")
