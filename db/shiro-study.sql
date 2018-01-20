@@ -4,13 +4,13 @@ Navicat MySQL Data Transfer
 Source Server         : localhost
 Source Server Version : 50712
 Source Host           : localhost:3306
-Source Database       : cms-admin
+Source Database       : shiro-study
 
 Target Server Type    : MYSQL
 Target Server Version : 50712
 File Encoding         : 65001
 
-Date: 2018-01-19 13:53:57
+Date: 2018-01-20 12:23:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -73,7 +73,7 @@ CREATE TABLE `oauth2_client` (
 -- ----------------------------
 -- Records of oauth2_client
 -- ----------------------------
-INSERT INTO `oauth2_client` VALUES ('1', 'test', '00001', 'XXXXXXX');
+INSERT INTO `oauth2_client` VALUES ('1', 'oauth2-client', 'c1ebe466-1cdc-4bd3-ab69-77c3561b9dee', 'd8346ea2-6017-43ed-ad68-19c0f971738b');
 
 -- ----------------------------
 -- Table structure for permission

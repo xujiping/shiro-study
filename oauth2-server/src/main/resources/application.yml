@@ -6,7 +6,7 @@ spring:
   #数据库连接配置
   datasource:
     name: test
-    url: jdbc:mysql://localhost:3306/cms-admin?useSSL=false
+    url: jdbc:mysql://localhost:3306/shiro-study?useSSL=false
     username: root
     password: Root123!
     # 使用druid数据源
